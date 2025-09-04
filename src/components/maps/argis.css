@@ -1,0 +1,29 @@
+@import "@arcgis/core/assets/esri/themes/light/main.css";
+
+
+
+
+.customTooltip {
+    position: absolute;
+    background-color: white;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    pointer-events: none;
+    text-align: start;
+    /* z-index alto para que se vea encima */
+    z-index: 9999;
+    /* Sombra para mejor visibilidad */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Fuente y colores */
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #333;
+    max-width: 300px;
+    /* Asegurar que se vea */
+    opacity: 1;
+    visibility: visible;
+}
+  
+  
+  
