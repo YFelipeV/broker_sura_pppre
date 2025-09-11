@@ -1,149 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Implementacion from '../components/Broker/implementacion/Implementacion';
 import Map from '../components/Broker/mapa/Map';
 import Regionales from '../components/Broker/regionales/Regionales';
-import Analisis from '../components/Broker/analisis/Analisis';
 import StatCard from '../components/Broker/StatCard/StatCard';
 import Filtros from '../components/Broker/filtros/Filtros';
+import AmenazasTreeMap from '../components/Broker/amenazas/AmenazasTreeMap';
+import MapaCalor from '../components/Broker/mapaCalor/MapaCalor';
+import ICRIVChart from '../components/Broker/icrChart/IcrIvChart';
+import TrazabilidadTable from '../components/Broker/trazabilidad/Trazabilidad';
+import { getEstadisticas, getDatosRegionales } from '../utils/filtros';
 
 
 export default function Analytics() {
-    const [selectedPeriod, setSelectedPeriod] = useState('2024');
+    const [selectedPeriod, setSelectedPeriod] = useState('2025');
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
-        region: 'all',
-        tipoEmpresa: 'all',
-        nivelRiesgo: 'all'
+        region: '',
+        sector: '',
+        amenaza: '',
+        empresa:'',
+        year:''
     });
     const [metrics, setMetrics] = useState({
-        totalEmpresas: 1245,
-        totalUsuarios: 892,
-        totalSucursales: 60,
-        amenazas: 156,
-        recursos: 342,
-        materialesPeligrosos: 87,
-        emergenciasActivas: 12,
-        planesDeAccion: 34,
-        alertasTempranas: 8,
-        totalImplementation: 60,
-        pareImplementation: 34,
-        marcoTeoricoImplementation: 87,
-        riskLevel: 'Medio'
+        totalEmpresas: 0,
+        empresasRegistradas: 0,
+        porcentajeRegistros: 0,
+        conPPPRE: 0,
+        promedioImplementacion: 0
     });
 
+    // Actualizar métricas cuando cambien los filtros
+    useEffect(() => {
+        const estadisticas = getEstadisticas(filters);
+        setMetrics(estadisticas);
+    }, [filters]);
 
-    // Configuración para ECharts - Gráfico de barras regionales
-    const regionalChartOption = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross',
-                crossStyle: {
-                    color: '#999'
-                }
-            }
-        },
-        toolbox: {
-            feature: {
-                dataView: { show: false, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        legend: {
-            data: ['Evaporation', 'Precipitation', 'Temperature']
-        },
-        xAxis: {
-            type: 'category',
-            data: ['Caribe', 'Antioquia', 'Córdoba', 'Chocó', 'Eje Cafetero', 'Cundinamarca'],
-            axisLabel: {
-                interval: 0,
-                rotate: 45,
-                fontSize: 10
-            },
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [{
-            data: [600, 400, 300, 250, 200, 100],
-            type: 'bar',
-            itemStyle: {
-                color: function (params) {
-                    const colors = ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EF4444', '#06B6D4'];
-                    return colors[params.dataIndex];
-                }
-            }
-        }]
-    };
+    // Datos para el gráfico regional
+    const datosRegionales = getDatosRegionales(filters);
 
-    // Configuración para ECharts - Gráfico de dona para análisis
-    const analysisChartOption = {
-        legend: {
-            top: 'bottom',
-            padding: [10, 0, 5, 0],
-            bottom: 10,
-        },
-        toolbox: {
-            feature: {
-                dataView: { show: false, readOnly: false },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
-        },
-        series: [{
-            name: 'Análisis',
-            type: 'pie',
-            radius: ['40%', '65%'],
-            center: ['50%', '45%'],
-            avoidLabelOverlap: false,
-            itemStyle: {
-                borderRadius: 8,
-                borderColor: '#fff',
-                borderWidth: 2,
-            },
-            label: {
-                show: true,
-                position: 'outside',
-                fontSize: '12px',
-                fontWeight: 'normal',
-                color: '#374151',
-                formatter: '{b}\n{c}',
-                distanceToLabelLine: 8
-            },
-            emphasis: {
-                label: {
-                    show: true,
-                    fontSize: '12px',
-                    fontWeight: 'normal'
-                }
-            },
-            labelLine: {
-                show: true,
-                length: 12,
-                length2: 6,
-                smooth: false,
-                lineStyle: {
-                    color: '#666',
-                    width: 1
-                }
-            },
-            data: [
-                { value: metrics.amenazas, name: 'Amenazas', itemStyle: { color: '#EF4444' } },
-                { value: metrics.recursos, name: 'Recursos', itemStyle: { color: '#3C82F6' } },
-                { value: metrics.materialesPeligrosos, name: 'Mat. Peligrosos', itemStyle: { color: '#F59E0B' } }
-            ]
-        }]
-    };
 
+   
 
 
     return (
@@ -183,29 +79,99 @@ export default function Analytics() {
                         )}
                     </div>
                 </div>
-
+                
+                {/* Filtros Activos - Tags */}
+                {(filters.region || filters.sector || filters.amenaza || filters.empresa) && (
+                    <div className="mb-4">
+                        <div className="flex flex-wrap gap-2">
+                            <span className="text-sm text-gray-600 mr-2 self-center">Filtros activos:</span>
+                            
+                            {filters.region && filters.region !== 'all' && (
+                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span className="mr-1">Región:</span>
+                                    <span className="font-semibold">{filters.region}</span>
+                                    <button
+                                        onClick={() => setFilters({...filters, region: ''})}
+                                        className="ml-1 hover:text-blue-600"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {filters.sector && filters.sector !== 'all' && (
+                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <span className="mr-1">Sector:</span>
+                                    <span className="font-semibold">{filters.sector}</span>
+                                    <button
+                                        onClick={() => setFilters({...filters, sector: ''})}
+                                        className="ml-1 hover:text-green-600"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {filters.amenaza && filters.amenaza !== 'all' && (
+                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                    <span className="mr-1">Amenaza:</span>
+                                    <span className="font-semibold truncate max-w-32">{filters.amenaza}</span>
+                                    <button
+                                        onClick={() => setFilters({...filters, amenaza: ''})}
+                                        className="ml-1 hover:text-orange-600"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {filters.empresa && filters.empresa !== 'all' && (
+                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <span className="mr-1">Empresa:</span>
+                                    <span className="font-semibold truncate max-w-32">{filters.empresa}</span>
+                                    <button
+                                        onClick={() => setFilters({...filters, empresa: ''})}
+                                        className="ml-1 hover:text-purple-600"
+                                    >
+                                        <i className="ri-close-line"></i>
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {/* Botón para limpiar todos los filtros */}
+                            <button
+                                onClick={() => setFilters({region: '', sector: '', amenaza: '', empresa: '', year: ''})}
+                                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            >
+                                <i className="ri-close-circle-line mr-1"></i>
+                                Limpiar todos
+                            </button>
+                        </div>
+                    </div>
+                )}
+                
                 {/* KPIs Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 mb-2">
                     <StatCard
                         title="Total Empresas"
                         value={metrics.totalEmpresas.toLocaleString()}
-                        subtitle="Empresas"
+                        subtitle="Empresas en el sistema"
                         icon="ri-building-line"
-                        color="bg-blue-500"
+                        color="bg-[#7db4f7]"
                     />
                     <StatCard
-                        title="Total Empresas registradas"
-                        value={metrics.totalUsuarios.toLocaleString()}
-                        subtitle="Empresas registradas"
+                        title="Empresas Registradas"
+                        value={metrics.empresasRegistradas.toLocaleString()}
+                        subtitle="Empresas filtradas"
                         icon="ri-store-line"
-                        color="bg-purple-500"
+                        color="bg-[#b599f8]"
                     />
                     <StatCard
                         title="Porcentaje de registros"
-                        value={`${metrics.totalSucursales.toLocaleString()}%`}
-                        subtitle="Porcentaje Total"
+                        value={`${metrics.conPPPRE.toLocaleString()}%`}
+                        subtitle={`Porcentaje Total`}
                         icon="ri-percent-line"
-                        color="bg-green-500"
+                        color="bg-[#6dd4a8]"
                     />
 
                 </div>
@@ -222,21 +188,26 @@ export default function Analytics() {
                                 Distribución geográfica de las empresas
                             </p>
                         </div>
-                        <Map />
+                        <Map  filters={filters}/>
 
                     </div>
                     {/* Regionales */}
-                    <Regionales chartOption={regionalChartOption} />
+                    <Regionales datos={datosRegionales} filters={filters} setFilters={setFilters} />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-2">
                     {/* Tabla PARE */}
-                    <Implementacion />
-                    {/* Gráfico de Análisis y Planes de Acción */}
-                    <Analisis chartOption={analysisChartOption} />
+                    <Implementacion filters={filters} />
+                    {/* Mapa de Calor */}
+                    <MapaCalor filters={filters} />
                 </div>
-
-
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-2">
+                    {/* Trazabilidad */}
+                    <TrazabilidadTable filters={filters} />
+                    <ICRIVChart filters={filters} setFilters={setFilters} />
+                    <AmenazasTreeMap filters={filters} setFilters={setFilters} />
+                </div>
+                
 
             </div>
         </div>

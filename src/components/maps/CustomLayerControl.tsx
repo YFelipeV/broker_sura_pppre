@@ -44,8 +44,8 @@ const CustomLayerControl = ({ view, data }: { view: any, data: any }) => {
     graphicsLayerRef.current.removeAll(); // Limpia gráficos existentes
 
     data && Array.isArray(data) && data.forEach((item) => {
-      if (item && item.latitude && item.longitude && item.type === "empresa") {
-        const { latitude, longitude, name, region, employees, id } = item;
+      if (item && item.latitude && item.longitude ) {
+        const { latitude, longitude, nombre_empresa, region, trabajadores, id } = item;
 
         // Crear un punto simple para la empresa
         const point = new Point({
@@ -63,7 +63,7 @@ const CustomLayerControl = ({ view, data }: { view: any, data: any }) => {
         const graphic = new Graphic({
           geometry: point,
           symbol,
-          attributes: { latitude, longitude, name, region, employees, id }
+          attributes: { latitude, longitude, nombre_empresa, region, trabajadores, id }
         });
 
         graphicsLayerRef.current.add(graphic);
@@ -80,7 +80,7 @@ const CustomLayerControl = ({ view, data }: { view: any, data: any }) => {
       const results = response.results; // Resultados del hitTest
       if (results?.length) {
         const graphicResult = results.find((r: any) => r.graphic);
-        if (graphicResult?.graphic?.attributes?.name) {
+        if (graphicResult?.graphic?.attributes?.nombre_empresa) {
           const attrs = graphicResult.graphic.attributes;
           // Actualiza el estado del tooltip si el mouse está sobre un gráfico
           setTooltip({
@@ -115,8 +115,8 @@ const CustomLayerControl = ({ view, data }: { view: any, data: any }) => {
         const graphicResult = results.find((r: any) => r.graphic);
         if (graphicResult?.graphic?.attributes?.id) {
           // Puedes agregar aquí lógica adicional para el clic en una empresa
-          const { id, name, region } = graphicResult.graphic.attributes;
-          // console.log("Empresa seleccionada:", name, "en región:", region);
+          const { id, nombre_empresa, region } = graphicResult.graphic.attributes;
+          // console.log("Empresa seleccionada:", nombre_empresa, "en región:", region);
         }
       }
     });
