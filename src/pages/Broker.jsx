@@ -168,7 +168,7 @@ export default function Analytics() {
                     />
                     <StatCard
                         title="Porcentaje de registros"
-                        value={`${metrics.conPPPRE.toLocaleString()}%`}
+                        value={`${metrics.porcentajeRegistros.toLocaleString()}%`}
                         subtitle={`Porcentaje Total`}
                         icon="ri-percent-line"
                         color="bg-[#6dd4a8]"

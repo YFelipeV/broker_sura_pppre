@@ -16,8 +16,23 @@ export const filtrarEmpresas = (filtros) => {
         // Filtro por amenaza - buscar en el array amenazas_identificadas
         if (filtros.amenaza && filtros.amenaza !== 'all') {
             const amenazasEmpresa = empresa.amenazas_identificadas || [];
-            const tieneAmenaza = amenazasEmpresa.includes(filtros.amenaza);
-            if (!tieneAmenaza) {
+            
+            // Si amenazas_identificadas es un array
+            if (Array.isArray(amenazasEmpresa)) {
+                const tieneAmenaza = amenazasEmpresa.includes(filtros.amenaza);
+                if (!tieneAmenaza) {
+                    return false;
+                }
+            } 
+            // Si amenazas_identificadas es un string (por si acaso)
+            else if (typeof amenazasEmpresa === 'string') {
+                const tieneAmenaza = amenazasEmpresa.toLowerCase().includes(filtros.amenaza.toLowerCase());
+                if (!tieneAmenaza) {
+                    return false;
+                }
+            }
+            // Si no hay amenazas identificadas
+            else {
                 return false;
             }
         }
@@ -29,6 +44,7 @@ export const filtrarEmpresas = (filtros) => {
 
         return true;
     });
+
 };
 
 export const getMarcadores=(filtros={})=>{
@@ -191,7 +207,7 @@ export const getDatosMapaCalor = (filtros = {}) => {
 
 
 
-// Datos para TreeMap de amenazas - SOLO NOMBRES DE AMENAZAS ÚNICAS
+// Datos para TreeMap de amenazas - SOLO LA AMENAZA FILTRADA O TODAS SI NO HAY FILTRO
 export const getDatosAmenazas = (filtros = {}) => {
     const empresasFiltradas = filtrarEmpresas(filtros);
     
@@ -199,7 +215,16 @@ export const getDatosAmenazas = (filtros = {}) => {
         return [];
     }
     
-    // Set para agrupar amenazas únicas (igual que trazabilidad)
+    // Si hay filtro de amenaza específica, solo mostrar esa amenaza
+    if (filtros.amenaza && filtros.amenaza !== 'all') {
+        return [{
+            id: 1,
+            name: filtros.amenaza,
+            amenaza: filtros.amenaza
+        }];
+    }
+    
+    // Si no hay filtro de amenaza, mostrar todas las amenazas únicas
     const amenazasUnicas = new Set();
     
     empresasFiltradas.forEach(empresa => {
@@ -225,27 +250,27 @@ export const getDatosAmenazasPlanas = (filtros = {}) => {
 };
 
 
-// Datos para trazabilidad de amenazas - BASADO EN AMENAZAS ESPECÍFICAS DE EMPRESAS
+// Datos para trazabilidad de amenazas - SOLO LA AMENAZA FILTRADA O TODAS
 export const getDatosTrazabilidad = (filtros = {}) => {
     const empresasFiltradas = filtrarEmpresas(filtros);
     
     // Generar trazabilidad basada en empresas filtradas
     const amenazasCompletas = [];
     
-    // Lista reducida de amenazas generales como respaldo
-    const amenazasGenerales = [
-        "Incendio en instalaciones",
-        "Robo o hurto"
-    ];
-    
     empresasFiltradas.forEach(empresa => {
         // Usar amenazas específicas de la empresa si existen, sino usar generales reducidas
         const amenazasEmpresa = empresa.amenazas_identificadas && empresa.amenazas_identificadas.length > 0 
             ? empresa.amenazas_identificadas 
-            : amenazasGenerales;
+            : [];
         
-        // Evaluar TODAS las amenazas identificadas de la empresa (sin límite)
-        amenazasEmpresa.forEach(amenaza => {
+        // Si hay filtro de amenaza específica, solo procesar esa amenaza
+        let amenazasAProcesar = amenazasEmpresa;
+        if (filtros.amenaza && filtros.amenaza !== 'all') {
+            amenazasAProcesar = amenazasEmpresa.filter(amenaza => amenaza === filtros.amenaza);
+        }
+        
+        // Evaluar las amenazas a procesar
+        amenazasAProcesar.forEach(amenaza => {
             // Simular datos de evaluación basados en el porcentaje de implementación
             const baseProb = 70 - (empresa.porcentaje_implementacion || 0) * 0.5;
             const baseImpacto = empresa.nivel_riesgo === 'Crítico' ? 90 : 
@@ -357,8 +382,10 @@ export const getEstadisticas = (filtros = {}) => {
     const empresasFiltradas = filtrarEmpresas(filtros);
     
     const totalEmpresas = empresas.length;
-    const empresasRegistradas = empresasFiltradas.length;
-    const porcentajeRegistros = totalEmpresas > 0 ? Math.round((empresasRegistradas / totalEmpresas) * 100) : 0;
+    const empresasFiltradas_count = empresasFiltradas.length;
+    
+    // Porcentaje de registros = empresas filtradas / total de empresas
+    const porcentajeRegistros = totalEmpresas > 0 ? Math.round((empresasFiltradas_count / totalEmpresas) * 100) : 0;
     
     const conPPPRE = empresasFiltradas.filter(e => e.tiene_pppre).length;
     const promedioImplementacion = empresasFiltradas.length > 0 
@@ -367,8 +394,8 @@ export const getEstadisticas = (filtros = {}) => {
     
     return {
         totalEmpresas,
-        empresasRegistradas,
-        porcentajeRegistros,
+        empresasRegistradas: empresasFiltradas_count,
+        porcentajeRegistros, // Este es el porcentaje de empresas filtradas sobre el total
         conPPPRE,
         promedioImplementacion
     };
