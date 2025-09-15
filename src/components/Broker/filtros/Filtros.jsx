@@ -7,7 +7,7 @@ export default function Filtros({ filters, setFilters, selectedPeriod, setSelect
 
     // Lista de regiones disponibles
     const { labels: regiones } = getDatosRegionales();
-    const { labels: sectores } = getSectores();
+    const  sectores  = getSectores();
 
     useEffect(() => {
         function handleClickOutside(event) {

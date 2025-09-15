@@ -18,8 +18,8 @@ export default function Analytics() {
         region: '',
         sector: '',
         amenaza: '',
-        empresa:'',
-        year:''
+        empresa: '',
+        year: ''
     });
     const [metrics, setMetrics] = useState({
         totalEmpresas: 0,
@@ -39,7 +39,6 @@ export default function Analytics() {
     const datosRegionales = getDatosRegionales(filters);
 
 
-   
 
 
     return (
@@ -79,68 +78,68 @@ export default function Analytics() {
                         )}
                     </div>
                 </div>
-                
+
                 {/* Filtros Activos - Tags */}
                 {(filters.region || filters.sector || filters.amenaza || filters.empresa) && (
                     <div className="mb-4">
                         <div className="flex flex-wrap gap-2">
                             <span className="text-sm text-gray-600 mr-2 self-center">Filtros activos:</span>
-                            
+
                             {filters.region && filters.region !== 'all' && (
                                 <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     <span className="mr-1">Región:</span>
                                     <span className="font-semibold">{filters.region}</span>
                                     <button
-                                        onClick={() => setFilters({...filters, region: ''})}
+                                        onClick={() => setFilters({ ...filters, region: '' })}
                                         className="ml-1 hover:text-blue-600"
                                     >
                                         <i className="ri-close-line"></i>
                                     </button>
                                 </div>
                             )}
-                            
+
                             {filters.sector && filters.sector !== 'all' && (
                                 <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     <span className="mr-1">Sector:</span>
                                     <span className="font-semibold">{filters.sector}</span>
                                     <button
-                                        onClick={() => setFilters({...filters, sector: ''})}
+                                        onClick={() => setFilters({ ...filters, sector: '' })}
                                         className="ml-1 hover:text-green-600"
                                     >
                                         <i className="ri-close-line"></i>
                                     </button>
                                 </div>
                             )}
-                            
+
                             {filters.amenaza && filters.amenaza !== 'all' && (
                                 <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                     <span className="mr-1">Amenaza:</span>
                                     <span className="font-semibold truncate max-w-32">{filters.amenaza}</span>
                                     <button
-                                        onClick={() => setFilters({...filters, amenaza: ''})}
+                                        onClick={() => setFilters({ ...filters, amenaza: '' })}
                                         className="ml-1 hover:text-orange-600"
                                     >
                                         <i className="ri-close-line"></i>
                                     </button>
                                 </div>
                             )}
-                            
+
                             {filters.empresa && filters.empresa !== 'all' && (
                                 <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                     <span className="mr-1">Empresa:</span>
                                     <span className="font-semibold truncate max-w-32">{filters.empresa}</span>
                                     <button
-                                        onClick={() => setFilters({...filters, empresa: ''})}
+                                        onClick={() => setFilters({ ...filters, empresa: '' })}
                                         className="ml-1 hover:text-purple-600"
                                     >
                                         <i className="ri-close-line"></i>
                                     </button>
                                 </div>
                             )}
-                            
+
                             {/* Botón para limpiar todos los filtros */}
                             <button
-                                onClick={() => setFilters({region: '', sector: '', amenaza: '', empresa: '', year: ''})}
+                                onClick={() => setFilters({ region: '', sector: '', amenaza: '', empresa: '', year: '' })}
                                 className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
                             >
                                 <i className="ri-close-circle-line mr-1"></i>
@@ -149,7 +148,7 @@ export default function Analytics() {
                         </div>
                     </div>
                 )}
-                
+
                 {/* KPIs Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 mb-2">
                     <StatCard
@@ -188,7 +187,7 @@ export default function Analytics() {
                                 Distribución geográfica de las empresas
                             </p>
                         </div>
-                        <Map  filters={filters}/>
+                        <Map filters={filters} />
 
                     </div>
                     {/* Regionales */}
@@ -207,7 +206,7 @@ export default function Analytics() {
                     <ICRIVChart filters={filters} setFilters={setFilters} />
                     <AmenazasTreeMap filters={filters} setFilters={setFilters} />
                 </div>
-                
+
 
             </div>
         </div>
