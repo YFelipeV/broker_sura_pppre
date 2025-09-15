@@ -1,142 +1,174 @@
-import { useEffect, useRef, useState } from "react";
+import { act, useEffect, useRef, useState } from "react";
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Point from "@arcgis/core/geometry/Point";
-import "./argis.css"; // Archivo CSS para estilos personalizados, como el tooltip
+import LayerList from '@arcgis/core/widgets/LayerList';
+import Expand from '@arcgis/core/widgets/Expand';
 import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
+import "./argis.css"; // Archivo CSS para estilos personalizados, como el tooltip
+
+interface EventHandler {
+  remove(): void;
+}
 
 // Componente principal que maneja la capa de gráficos y el tooltip
 const CustomLayerControl = ({ view, data }: { view: any, data: any }) => {
-  const [tooltip, setTooltip] = useState({
-    visible: false, // Estado para mostrar/ocultar el tooltip
-    x: 0, // Posición X del tooltip
-    y: 0, // Posición Y del tooltip
-    content: "" // Contenido dinámico del tooltip
-  });
 
-  const graphicsLayerRef = useRef(new GraphicsLayer()); // Capa de gráficos para el mapa
+  const expandRef = useRef<Expand | null>(null);
+  const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
+  const layerChangeHandlerRef = useRef<EventHandler | null>(null);
 
   useEffect(() => {
     if (view) {
-      view.popup.autoOpenEnabled = false; // Deshabilita el popup nativo del mapa
-      if (!view.map.layers.includes(graphicsLayerRef.current)) {
-        view.map.add(graphicsLayerRef.current); // Agrega la capa de gráficos al mapa
-      }
-      const layerIndex = view.map.layers.length - 1;
-      view.map.reorder(graphicsLayerRef.current, layerIndex); // Asegura que la capa esté encima
-
-      // Agrega los gráficos al mapa
-      addGraphicsToMap();
-
-      // Configura eventos del mapa
-      //view.on("pointer-move", handlePointerMove); // Muestra tooltip al mover el mouse
-      view.on("click", handleClickOnMap); // Maneja clics sobre los gráficos
+      loadLayers();
+      setupLayerListExpand();
+      setupLayerChangeHandler();
+      setupClickAndMouseHandler();
     }
-
-    // Limpia la capa al desmontar el componente
     return () => {
-      graphicsLayerRef.current?.removeAll();
+      cleanupResources();
     };
   }, [view, data]);
 
-  // Función para agregar gráficos al mapa basados en los datos
-  const addGraphicsToMap = () => {
-    graphicsLayerRef.current.removeAll(); // Limpia gráficos existentes
+  // =================== CLEAR ITEMS ===================
+  const cleanupResources = () => {
+    if (expandRef.current) {
+      if (view && view.ui && typeof view.ui.remove === 'function') {
+        view.ui.remove(expandRef.current);
+      }
+      if (expandRef.current.destroy) {
+        expandRef.current.destroy();
+      }
+      expandRef.current = null;
+    }
 
-    data && Array.isArray(data) && data.forEach((item) => {
-      if (item && item.latitude && item.longitude ) {
-        const { latitude, longitude, nombre_empresa, region, trabajadores, id } = item;
+    if (graphicsLayerRef.current) {
+      if (view && view.map && typeof view.map.remove === 'function') {
+        view.map.remove(graphicsLayerRef.current);
+      }
+      graphicsLayerRef.current = null;
+    }
 
-        // Crear un punto simple para la empresa
+    if (layerChangeHandlerRef.current) {
+      try {
+        if (typeof layerChangeHandlerRef.current.remove === 'function') {
+          layerChangeHandlerRef.current.remove();
+        }
+      } catch (error) {
+        console.log('Error limpiando handler:', error);
+      }
+      layerChangeHandlerRef.current = null;
+    }
+  };
+
+  // =================== ADD ITEMS ===================
+  const loadLayers = () => {
+    // Capa Enpresas
+    if (!graphicsLayerRef.current) {
+      graphicsLayerRef.current = new GraphicsLayer({ title: "Empresas" });
+      view.map.add(graphicsLayerRef.current);
+    } else {
+      graphicsLayerRef.current.removeAll();
+      view.map.reorder(graphicsLayerRef.current, view.map.layers.length - 1);
+    }
+
+    addAllMarkers(); // Todos los marcadores
+  };
+
+  // Todos los marcadores
+  const addAllMarkers = () => {
+    (data || []).forEach((marcador: any) => {
+      if (marcador?.latitude && marcador?.longitude) {
+
         const point = new Point({
-          longitude: Number(longitude),
-          latitude: Number(latitude)
+          longitude: parseFloat(marcador.longitude),
+          latitude: parseFloat(marcador.latitude)
         });
 
-        // Usar PictureMarkerSymbol con el marcador rojo de Google
         const symbol = new PictureMarkerSymbol({
           url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-          width: "14px",
-          height: "14px"
+          width: "15px",
+          height: "15px"
         });
 
-        const graphic = new Graphic({
+        const pointGraphic = new Graphic({
           geometry: point,
-          symbol,
-          attributes: { latitude, longitude, nombre_empresa, region, trabajadores, id }
+          symbol: symbol,
+          attributes: { id: marcador.id, name: marcador.nombre_empresa }
         });
 
-        graphicsLayerRef.current.add(graphic);
+        graphicsLayerRef?.current?.add(pointGraphic);
       }
     });
 
-   // console.log("Total de marcadores agregados:", graphicsLayerRef.current.graphics.length);
+    if (graphicsLayerRef.current && graphicsLayerRef.current.graphics.length > 0) {
+      view.goTo(graphicsLayerRef.current.graphics.toArray()).catch(() => { });
+    }
   };
 
-  // Maneja el movimiento del mouse para mostrar el tooltip
-  const handlePointerMove = (event: any) => {
-    view.hitTest(event).then((response: any) => {
-      const { x, y } = event; // Obtiene la posición del mouse
-      const results = response.results; // Resultados del hitTest
-      if (results?.length) {
-        const graphicResult = results.find((r: any) => r.graphic);
-        if (graphicResult?.graphic?.attributes?.nombre_empresa) {
-          const attrs = graphicResult.graphic.attributes;
-          // Actualiza el estado del tooltip si el mouse está sobre un gráfico
-          setTooltip({
-            visible: true,
-            x: x,
-            y: y,
-            content: `
-              <div style="font-family: Arial, sans-serif;">
-                <div style="font-size: 14px; font-weight: bold;  margin-bottom: 5px;">
-                   ${attrs.name}
-                </div>
-                <div style="font-size: 11px; color: #ccc; margin-top: 5px;">
-                  Coordenadas: ${attrs.longitude.toFixed(4)}, ${attrs.latitude.toFixed(4)}
-                </div>
-              </div>
-            `
-          });
-          return;
-        }
-      }
-
-      // Oculta el tooltip si no hay gráficos debajo del mouse
-      setTooltip((prev) => ({ ...prev, visible: false }));
+  // =================== LIST/ORDER ===================
+  const setupLayerListExpand = () => {
+    if (expandRef.current) {
+      expandRef.current.destroy();
+    }
+    const layerList = new LayerList({ view: view });
+    expandRef.current = new Expand({
+      view: view,
+      content: layerList,
+      expandIcon: "layers",
+      group: "top-right"
     });
+    view.ui.add(expandRef.current, "top-right");
   };
 
-  // Maneja el clic en un gráfico para mostrar información
-  const handleClickOnMap = (event: any) => {
-    view.hitTest(event).then((response: any) => {
-      const results = response.results;
-      if (results?.length) {
-        const graphicResult = results.find((r: any) => r.graphic);
-        if (graphicResult?.graphic?.attributes?.id) {
-          // Puedes agregar aquí lógica adicional para el clic en una empresa
-          const { id, nombre_empresa, region } = graphicResult.graphic.attributes;
-          // console.log("Empresa seleccionada:", nombre_empresa, "en región:", region);
-        }
+  const setupLayerChangeHandler = () => {
+    if (layerChangeHandlerRef.current) {
+      layerChangeHandlerRef.current.remove();
+    }
+    layerChangeHandlerRef.current = view.map.layers.on("change", function () {
+      if (graphicsLayerRef.current) {
+        view.map.reorder(graphicsLayerRef.current, view.map.layers.length - 1);
       }
     });
   };
 
 
+  // =================== ACTIONS ===================
+  let popupsEnabled: boolean = true;
+  let currentGraphicId: string | null = null;
+  const setupClickAndMouseHandler = () => {
+    view.on("pointer-move", (event: any) => {
+      if (popupsEnabled) {
+        view.hitTest(event).then((response: any) => {
+          const results = response.results;
+          const graphic = results.find((result: any) => result.graphic && result.graphic.attributes && result.graphic.attributes.id);
 
-  return (
-    <>
-      {/* Renderiza el tooltip si está visible */}
-      {tooltip.visible && (
-        <div
-          className="customTooltip"
-          style={{ left: tooltip.x + 10, top: tooltip.y - 60, width: "400px" }}
+          const graphicId: string | null = graphic ? graphic.graphic.attributes.id : null;
 
-          dangerouslySetInnerHTML={{ __html: tooltip.content }} // Contenido HTML del tooltip
-        />
-      )}
-    </>
-  );
+          if (graphicId !== currentGraphicId) {
+            currentGraphicId = graphicId;
+            if (graphic) {
+              view.container.style.cursor = "pointer";
+
+              view.openPopup({
+                location: graphic.graphic.geometry,
+                content: `<span style="color: black; font-size: 15px; font-weight: bold;">${graphic.graphic.attributes.name}</span>`,
+                includeDefaultActions: false,
+              });
+            } else {
+              view.container.style.cursor = "default";
+              view.closePopup();
+            }
+          }
+        });
+      } else {
+        view.closePopup();
+      }
+    });
+  };
+
+
+  return null;
 };
 
 export default CustomLayerControl;
