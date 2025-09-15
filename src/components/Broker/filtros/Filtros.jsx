@@ -1,13 +1,21 @@
-import  { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { getDatosRegionales, getSectores } from '../../../utils/filtros';
 import { empresas } from '../../../data/empresas';
+import { useFilters } from '../../../context/FilterContext';
 
-export default function Filtros({ filters, setFilters, selectedPeriod, setSelectedPeriod, setShowFilters }) {
+export default function Filtros() {
+    const { 
+        filters, 
+        setShowFilters, 
+        updateFilter, 
+        clearAllFilters 
+    } = useFilters();
+    
     const popoverRef = useRef(null);
 
     // Lista de regiones disponibles
     const { labels: regiones } = getDatosRegionales();
-    const  sectores  = getSectores();
+    const sectores = getSectores();
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -23,21 +31,11 @@ export default function Filtros({ filters, setFilters, selectedPeriod, setSelect
     }, [setShowFilters]);
 
     const handleFilterChange = (filterType, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [filterType]: value === 'all' || value === 'all' ? '' : value
-        }));
+        updateFilter(filterType, value);
     };
 
     const limpiarFiltros = () => {
-        setFilters({
-            region: '',
-            sector: '',
-            amenaza: '',
-            empresa: '',
-            year: ''
-        });
-        setSelectedPeriod('2025');
+        clearAllFilters();
     };
 
     return (
@@ -60,12 +58,12 @@ export default function Filtros({ filters, setFilters, selectedPeriod, setSelect
                             Período
                         </label>
                         <select
-                            value={selectedPeriod}
-                            onChange={(e) => setSelectedPeriod(e.target.value)}
+                            value={filters.periodo || 'all'}
+                            onChange={(e) => handleFilterChange('periodo', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         >
                             <option value="all">Todos</option>
-                            <option value="2024">2025</option>
+                            <option value="2025">2025</option>
                         </select>
                     </div>
 

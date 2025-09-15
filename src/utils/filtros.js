@@ -3,6 +3,18 @@ import { empresas } from '../data/empresas.js';
 // Funciones de filtrado para los gráficos
 export const filtrarEmpresas = (filtros) => {
     return empresas.filter(empresa => {
+        // Filtro por período/año
+        if (filtros.periodo && filtros.periodo !== 'all') {
+            // Extraer el año de la fecha_registro (formato: '2025-01-15')
+            const yearEmpresa = empresa.fecha_registro 
+                ? empresa.fecha_registro.split('-')[0] 
+                : '2025'; // Por defecto 2025 si no hay fecha
+                
+            if (yearEmpresa !== filtros.periodo) {
+                return false;
+            }
+        }
+        
         // Filtro por región
         if (filtros.region && filtros.region !== 'all' && empresa.region !== filtros.region) {
             return false;
@@ -568,4 +580,19 @@ export const getDatosImplementacion = (filtros = {}) => {
         numeroEmpresas: empresasFiltradas.length,
         promedioReal: Math.round(promedioImplementacion) // Para debug
     };
+};
+
+// Nuevas funciones para obtener opciones disponibles
+
+export const getOpcionesPeriodo = () => {
+    // Períodos disponibles para el sistema PPPRE
+    const periodosDisponibles = ['2024', '2025', '2026'];
+    
+    return [
+        { value: 'all', label: 'Todos los períodos' },
+        ...periodosDisponibles.map(periodo => ({
+            value: periodo,
+            label: periodo
+        }))
+    ];
 };

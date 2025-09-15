@@ -23,9 +23,7 @@ export const empresas = [
         porcentaje_implementacion: 75,
         amenazas_identificadas: [
             'Accidentes de tránsito',
-            'Robo de carga',
-            'Fallas mecánicas de vehículos',
-            'Fatiga de conductores'
+            'Robo de carga'
         ]
     },
     {
@@ -49,11 +47,7 @@ export const empresas = [
         tiene_pppre: true,
         porcentaje_implementacion: 90,
         amenazas_identificadas: [
-            'Explosión en plantas',
-            'Derrame de químicos',
-            'Incendio industrial',
-            'Intoxicación por gases',
-            'Fallas en equipos críticos'
+            'Explosión en plantas'
         ]
     },
     {
@@ -78,9 +72,7 @@ export const empresas = [
         porcentaje_implementacion: 0,
         amenazas_identificadas: [
             'Robo en establecimiento',
-            'Incendio en bodega',
-            'Daños por inundación',
-            'Accidentes de clientes'
+            'Incendio en bodega'
         ]
     },
     {
@@ -102,7 +94,11 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 82
+        porcentaje_implementacion: 82,
+        amenazas_identificadas: [
+            'Inundaciones',
+            'Sismos'
+        ]
     },
     {
         id: 17,
@@ -123,7 +119,10 @@ export const empresas = [
         nivel_riesgo: 'Crítico',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 88
+        porcentaje_implementacion: 88,
+        amenazas_identificadas: [
+            'Sismos'
+        ]
     },
     {
         id: 18,
@@ -144,7 +143,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Incendios estructurales'
+        ]
     },
     {
         id: 19,
@@ -165,7 +167,10 @@ export const empresas = [
         nivel_riesgo: 'Bajo',
         tipo_empresa: 'Mediana',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Sismos'
+        ]
     },
     {
         id: 20,
@@ -186,7 +191,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 65
+        porcentaje_implementacion: 65,
+        amenazas_identificadas: [
+            'Incendios forestales'
+        ]
     },
 
     // REGIÓN ANTIOQUIA - 15 empresas
@@ -211,11 +219,7 @@ export const empresas = [
         tiene_pppre: true,
         porcentaje_implementacion: 85,
         amenazas_identificadas: [
-            'Derrumbes en túneles',
-            'Explosión por gases',
-            'Accidentes con maquinaria pesada',
-            'Inundación de minas',
-            'Intoxicación por polvo mineral'
+            'Derrumbes en túneles'
         ]
     },
     {
@@ -237,7 +241,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 60
+        porcentaje_implementacion: 60,
+        amenazas_identificadas: [
+            'Inundación de minas'
+        ]
     },
     {
         id: 6,
@@ -258,7 +265,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Explosión por gases'
+        ]
     },
     {
         id: 21,
@@ -279,7 +289,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 92
+        porcentaje_implementacion: 92,
+        amenazas_identificadas: [
+            'Accidentes con maquinaria pesada'
+        ]
     },
     {
         id: 22,
@@ -300,7 +313,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 58
+        porcentaje_implementacion: 58,
+        amenazas_identificadas: [
+            'Accidentes con maquinaria pesada'
+        ]
     },
     {
         id: 23,
@@ -321,7 +337,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 78
+        porcentaje_implementacion: 78,
+        amenazas_identificadas: [
+            'Inundaciones'
+        ]
     },
     {
         id: 24,
@@ -342,7 +361,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Explosiones'
+        ]
     },
     {
         id: 25,
@@ -363,7 +385,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 85
+        porcentaje_implementacion: 85,
+        amenazas_identificadas: [
+            'Fugas de gas o químicos'
+        ]
     },
 
     // REGIÓN CÓRDOBA - 8 empresas
@@ -389,10 +414,7 @@ export const empresas = [
         porcentaje_implementacion: 70,
         amenazas_identificadas: [
             'Intoxicación por pesticidas',
-            'Accidentes con maquinaria agrícola',
-            'Enfermedades por contacto animal',
-            'Contaminación de productos',
-            'Inundaciones por lluvia'
+            'Accidentes con maquinaria agrícola'
         ]
     },
     {
@@ -414,7 +436,10 @@ export const empresas = [
         nivel_riesgo: 'Bajo',
         tipo_empresa: 'Mediana',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Accidentes con maquinaria agrícola'
+        ]
     },
     {
         id: 26,
@@ -435,7 +460,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 45
+        porcentaje_implementacion: 45,
+        amenazas_identificadas: [
+            'Enfermedades por contacto animal'
+        ]
     },
     {
         id: 27,
@@ -456,7 +484,11 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Contaminación de productos',
+            'Inundaciones por lluvia'
+        ]
     },
 
     // REGIÓN CHOCÓ - 6 empresas
@@ -479,7 +511,11 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Inundaciones'
+        ]
+
     },
     {
         id: 10,
@@ -500,7 +536,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Accidentes con maquinaria agrícola'
+        ]
     },
     {
         id: 28,
@@ -521,7 +560,10 @@ export const empresas = [
         nivel_riesgo: 'Crítico',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Enfermedades por contacto animal'
+        ]
     },
     {
         id: 29,
@@ -542,7 +584,11 @@ export const empresas = [
         nivel_riesgo: 'Bajo',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Contaminación de productos',
+            'Inundaciones por lluvia'
+        ]
     },
 
     // REGIÓN EJE CAFETERO - 10 empresas
@@ -565,7 +611,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 55
+        porcentaje_implementacion: 55,
+        amenazas_identificadas: [
+            'Inundaciones por lluvia'
+        ]
     },
     {
         id: 12,
@@ -586,7 +635,10 @@ export const empresas = [
         nivel_riesgo: 'Bajo',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Deslizamientos de tierra'
+        ]
     },
     {
         id: 30,
@@ -607,7 +659,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Pequeña',
         tiene_pppre: false,
-        porcentaje_implementacion: 0
+        porcentaje_implementacion: 0,
+        amenazas_identificadas: [
+            'Derrame de químicos'
+        ]
     },
     {
         id: 31,
@@ -628,7 +683,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 42
+        porcentaje_implementacion: 42,
+        amenazas_identificadas: [
+            'Incendio industrial'
+        ]
     },
     {
         id: 32,
@@ -649,7 +707,11 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 68
+        porcentaje_implementacion: 68,
+        amenazas_identificadas: [
+            'Intoxicación por gases'
+
+        ]
     },
 
     // REGIÓN CUNDINAMARCA - 18 empresas
@@ -674,11 +736,7 @@ export const empresas = [
         tiene_pppre: true,
         porcentaje_implementacion: 80,
         amenazas_identificadas: [
-            'Caídas de altura',
-            'Colapso de estructuras',
-            'Accidentes con maquinaria',
-            'Electrocución',
-            'Golpes por objetos'
+            'Caídas de altura'
         ]
     },
     {
@@ -703,10 +761,7 @@ export const empresas = [
         porcentaje_implementacion: 0,
         amenazas_identificadas: [
             'Ciberataques',
-            'Pérdida de datos',
-            'Fallas en sistemas',
-            'Robo de información',
-            'Cortes de energía'
+            'Pérdida de datos'
         ]
     },
     {
@@ -730,11 +785,7 @@ export const empresas = [
         tiene_pppre: true,
         porcentaje_implementacion: 95,
         amenazas_identificadas: [
-            'Contaminación de productos',
-            'Exposición a sustancias tóxicas',
-            'Falla en equipos estériles',
-            'Incendio en laboratorios',
-            'Errores en dosificación'
+            'Contaminación de productos'
         ]
     },
     {
@@ -756,7 +807,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 88
+        porcentaje_implementacion: 88,
+        amenazas_identificadas:[
+                        'Colapso de estructuras'
+        ]
     },
     {
         id: 34,
@@ -777,7 +831,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 75
+        porcentaje_implementacion: 75,
+        amenazas_identificadas:[
+            'Accidentes con maquinaria'
+        ]
     },
     {
         id: 35,
@@ -798,7 +855,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 62
+        porcentaje_implementacion: 62,
+        amenazas_identificadas:[
+            'Electrocución'
+        ]
     },
     {
         id: 36,
@@ -819,7 +879,10 @@ export const empresas = [
         nivel_riesgo: 'Moderado',
         tipo_empresa: 'Mediana',
         tiene_pppre: true,
-        porcentaje_implementacion: 70
+        porcentaje_implementacion: 70,
+        amenazas_identificadas:[
+            'Golpes por objetos'
+        ]
     },
     {
         id: 37,
@@ -840,7 +903,10 @@ export const empresas = [
         nivel_riesgo: 'Alto',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 73
+        porcentaje_implementacion: 73,
+        amenazas_identificadas:[
+            'Accidentes con maquinaria'
+        ]
     },
     {
         id: 38,
@@ -861,7 +927,10 @@ export const empresas = [
         nivel_riesgo: 'Crítico',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 92
+        porcentaje_implementacion: 92,
+        amenazas_identificadas:[
+            'Infecciones nosocomiales'
+        ]
     },
     {
         id: 39,
@@ -882,6 +951,10 @@ export const empresas = [
         nivel_riesgo: 'Crítico',
         tipo_empresa: 'Grande',
         tiene_pppre: true,
-        porcentaje_implementacion: 86
+        porcentaje_implementacion: 86,
+        amenazas_identificadas:[
+            'Exposición a sustancias químicas',
+            'Fugas de gas'
+        ]
     }
 ];

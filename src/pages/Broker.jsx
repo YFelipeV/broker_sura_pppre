@@ -9,18 +9,19 @@ import MapaCalor from '../components/Broker/mapaCalor/MapaCalor';
 import ICRIVChart from '../components/Broker/icrChart/IcrIvChart';
 import TrazabilidadTable from '../components/Broker/trazabilidad/Trazabilidad';
 import { getEstadisticas, getDatosRegionales } from '../utils/filtros';
+import { FilterProvider, useFilters } from '../context/FilterContext';
+import TagsFilter from '../components/Broker/filtros/TagsFilter';
 
+// Componente interno que usa el contexto
+function BrokerContent() {
+    const {
+        filters,
+        showFilters,
+        setShowFilters,
+        clearAllFilters,
+        setFilters
+    } = useFilters();
 
-export default function Analytics() {
-    const [selectedPeriod, setSelectedPeriod] = useState('2025');
-    const [showFilters, setShowFilters] = useState(false);
-    const [filters, setFilters] = useState({
-        region: '',
-        sector: '',
-        amenaza: '',
-        empresa: '',
-        year: ''
-    });
     const [metrics, setMetrics] = useState({
         totalEmpresas: 0,
         empresasRegistradas: 0,
@@ -68,85 +69,18 @@ export default function Analytics() {
 
                         {/* Popover de Filtros */}
                         {showFilters && (
-                            <Filtros
-                                filters={filters}
-                                setFilters={setFilters}
-                                selectedPeriod={selectedPeriod}
-                                setSelectedPeriod={setSelectedPeriod}
-                                setShowFilters={setShowFilters}
-                            />
+                            <Filtros />
                         )}
                     </div>
                 </div>
 
                 {/* Filtros Activos - Tags */}
-                {(filters.region || filters.sector || filters.amenaza || filters.empresa) && (
-                    <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                            <span className="text-sm text-gray-600 mr-2 self-center">Filtros activos:</span>
-
-                            {filters.region && filters.region !== 'all' && (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    <span className="mr-1">Región:</span>
-                                    <span className="font-semibold">{filters.region}</span>
-                                    <button
-                                        onClick={() => setFilters({ ...filters, region: '' })}
-                                        className="ml-1 hover:text-blue-600"
-                                    >
-                                        <i className="ri-close-line"></i>
-                                    </button>
-                                </div>
-                            )}
-
-                            {filters.sector && filters.sector !== 'all' && (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span className="mr-1">Sector:</span>
-                                    <span className="font-semibold">{filters.sector}</span>
-                                    <button
-                                        onClick={() => setFilters({ ...filters, sector: '' })}
-                                        className="ml-1 hover:text-green-600"
-                                    >
-                                        <i className="ri-close-line"></i>
-                                    </button>
-                                </div>
-                            )}
-
-                            {filters.amenaza && filters.amenaza !== 'all' && (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                    <span className="mr-1">Amenaza:</span>
-                                    <span className="font-semibold truncate max-w-32">{filters.amenaza}</span>
-                                    <button
-                                        onClick={() => setFilters({ ...filters, amenaza: '' })}
-                                        className="ml-1 hover:text-orange-600"
-                                    >
-                                        <i className="ri-close-line"></i>
-                                    </button>
-                                </div>
-                            )}
-
-                            {filters.empresa && filters.empresa !== 'all' && (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                    <span className="mr-1">Empresa:</span>
-                                    <span className="font-semibold truncate max-w-32">{filters.empresa}</span>
-                                    <button
-                                        onClick={() => setFilters({ ...filters, empresa: '' })}
-                                        className="ml-1 hover:text-purple-600"
-                                    >
-                                        <i className="ri-close-line"></i>
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* Botón para limpiar todos los filtros */}
-                            <button
-                                onClick={() => setFilters({ region: '', sector: '', amenaza: '', empresa: '', year: '' })}
-                                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
-                            >
-                                <i className="ri-close-circle-line mr-1"></i>
-                                Limpiar todos
-                            </button>
-                        </div>
-                    </div>
+                {(filters?.region || filters?.sector || filters?.amenaza || filters?.empresa ||filters?.periodo) && (
+                    <TagsFilter
+                        filters={filters}
+                        setFilters={setFilters}
+                        clearAllFilters={clearAllFilters}
+                    />
                 )}
 
                 {/* KPIs Cards */}
@@ -202,7 +136,7 @@ export default function Analytics() {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-2">
                     {/* Trazabilidad */}
-                    <TrazabilidadTable filters={filters} />
+                    <TrazabilidadTable filters={filters} setFilters={setFilters} />
                     <ICRIVChart filters={filters} setFilters={setFilters} />
                     <AmenazasTreeMap filters={filters} setFilters={setFilters} />
                 </div>
@@ -210,5 +144,14 @@ export default function Analytics() {
 
             </div>
         </div>
+    );
+}
+
+// Componente principal que provee el contexto
+export default function Analytics() {
+    return (
+        <FilterProvider>
+            <BrokerContent />
+        </FilterProvider>
     );
 }

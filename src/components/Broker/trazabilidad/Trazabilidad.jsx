@@ -1,13 +1,12 @@
-import React from 'react';
 import { getDatosTrazabilidad } from '../../../utils/filtros';
 
-const TrazabilidadTable = ({ filters }) => {
+const TrazabilidadTable = ({ filters, setFilters }) => {
     // Obtener datos dinámicos de trazabilidad basados en filtros
     const getDatosTrazabilidadFormateados = () => {
         const datosOriginales = getDatosTrazabilidad(filters || {});
         // Agrupar amenazas únicas con sus evaluaciones
         const amenazasUnicas = {};
-        
+
         datosOriginales.forEach(item => {
             if (!amenazasUnicas[item.amenaza]) {
                 amenazasUnicas[item.amenaza] = {
@@ -16,7 +15,7 @@ const TrazabilidadTable = ({ filters }) => {
                 };
             }
         });
-        
+
         return Object.values(amenazasUnicas);
     };
 
@@ -81,18 +80,26 @@ const TrazabilidadTable = ({ filters }) => {
 
                     {/* Body */}
                     <tbody className='text-[12px]'>
-                        {threats.map((threat, index) => (
-                            <tr key={index} className="hover:bg-gray-50 h-10">
-                                <td className="sticky left-0 z-10 bg-white hover:bg-gray-50 border-b border-r border-gray-200 px-3 py-2 text-gray-800  w-80">
-                                    {threat.amenaza}
-                                </td>
-                                {years.map((year) => (
-                                    <td key={year} className={`border-b border-l border-gray-200 px-3 py-2 text-[11px] text-center font-medium w-24  ${getRiskColorClass(threat[year])}`}>
-                                        {threat[year]}
+                        {Array.isArray(threats) && threats.length > 0 ? (
+                            threats.map((threat, index) => (
+                                <tr key={index} className="hover:bg-gray-50 h-10">
+                                    <td onDoubleClick={() => setFilters({ ...filters, amenaza: threat.amenaza })} className="sticky cursor-pointer left-0 z-10 bg-white hover:bg-gray-50 border-b border-r border-gray-200 px-3 py-2 text-gray-800  w-80">
+                                        {threat.amenaza}
                                     </td>
-                                ))}
+                                    {years.map((year) => (
+                                        <td key={year} className={`border-b border-l border-gray-200 px-3 py-2 text-[11px] text-center font-medium w-24  ${getRiskColorClass(threat[year])}`}>
+                                            {threat[year]}
+                                        </td>
+                                    ))
+                                    }
+                                </tr>
+                            ))) : (
+                            <tr>
+                                <td colSpan={years.length + 1} className="text-center text-gray-500 py-4">
+                                    No hay datos disponibles
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

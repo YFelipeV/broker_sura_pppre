@@ -112,6 +112,13 @@ export default function AmenazasTreeMap({ filters, setFilters }) {
             </div>
             <div className="p-1 py-0">
                 <div className="h-155">
+                    {
+                        Array.isArray(amenazasData) && amenazasData.length === 0 ? (
+                            <div className="flex items-center justify-center h-full">
+                                <span className="text-gray-500 text-xs">No hay datos disponibles</span>
+                            </div>
+                        ) : null
+                    }
                     <ReactEcharts
                         option={option}
                         style={{ height: '100%', width: '100%' }}
